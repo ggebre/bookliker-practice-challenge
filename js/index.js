@@ -59,15 +59,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 fetchBookById(id)
                      .then(bookObj => {
                         let bookUsers = [...bookObj.users] 
-                        if (likeButtonToggle){
-                            bookUsers.push(currentuser);
-                        } else {
-                            bookUsers.pop();
-                        }
+                        let buttonTextValue = likeButtonToggle ? "UNLIKE" : "LIKE"; 
+                            likeButtonToggle ? bookUsers.push(currentuser) : bookUsers.pop()
                         
                         updateBookById(id, bookUsers)
                         .then(bookObj => {
-                            renderShowPanel(bookObj)
+                            renderShowPanel(bookObj, buttonTextValue)
                         }) 
 
                         likeButtonToggle = !likeButtonToggle
@@ -100,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(resp => resp.json())
     }
 
-    function renderShowPanel({title, img_url, subtitle, description, users, id}) {
+    function renderShowPanel({title, img_url, subtitle, description, users, id}, buttonText="LIKE") {
         let showPanelHTML = `<img src=${img_url}>
                             <h1> ${title} </h1>
                             <h2> ${subtitle || ""} </h2>
@@ -110,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function() {
         users.forEach(user =>  {
             showPanelHTML += `<li data-id=${user.id}>` + user.username + "</li>"
         } )
-        showPanelHTML += `</ul><br><button data-id=${id}> LIKE </button>`
+        showPanelHTML += `</ul><br><button data-id=${id}> ${buttonText} </button>`
 
         showPanel.innerHTML = showPanelHTML
         
